@@ -1,20 +1,14 @@
 from adafruit_servokit import ServoKit
 class Leg:
-    Joints = ServoKit(channels=16)
-    FemurLength = 0
-    TibiaLength = 0
-    SholderOffset = 0
-
-    # Canais dos sevos das juntas no driver
-    footJointChannel = 0
-    legJointChannel = 0
-    shoulderJointChannel = 0
-
+    
     def __init__(self, femurlength, tibialength, shoulderoffset, JointsChannels):
+        self.Joints = ServoKit(channels=16)
+        
         self.FemurLength = femurlength
         self.TibiaLength = tibialength
         self.SholderOffset = shoulderoffset
 
+        # Canais dos sevos das juntas no driver
         self.footJointChannel = JointsChannels[0]
         self.legJointChannel = JointsChannels[1]
         self.shoulderJointChannel = JointsChannels[2]

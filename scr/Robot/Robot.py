@@ -1,12 +1,11 @@
 from Leg import Leg
 class Apex:
-    FrontLeftLeg = Leg()
-    FrontRightLeg = Leg()
-    BackRightLeg = Leg()
-    BackLeftLeg = Leg()
 
     def __init__(self):
-        pass
+        self.FrontLeftLeg = Leg()
+        self.FrontRightLeg = Leg()
+        self.BackRightLeg = Leg()
+        self.BackLeftLeg = Leg()
 
     def setFrontLeftLeg(self, foot, leg, shoulder):
         LegJointAngle = 180-(90-leg)
