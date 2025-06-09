@@ -2,7 +2,6 @@
 
 import rospy
 import math
-from std_msgs.msg import Float64
 from apex_controller.inverse_kinematics import InverseKinematics, interpolate, KeyframeKinematics
 
 from adafruit_servokit import ServoKit
@@ -26,22 +25,6 @@ class locomotion_controller(object):
         self.keyframesBackLeftLeg = [[-30,210, 60], [-30,200, 70]]
         self.keyframesFrontRightLeg = [[-30,210, 60], [-30,200, 70]]
         self.keyframesBackRightLeg = [[-30,210, 60], [-30,200, 70]]
-
-        self.back_right_thigh = rospy.Publisher('/quad_robo/brt_position_controller/command', Float64, queue_size=10)
-        self.back_right_leg = rospy.Publisher('/quad_robo/brl_position_controller/command', Float64, queue_size=10)
-        self.back_right_shin = rospy.Publisher('/quad_robo/brs_position_controller/command', Float64, queue_size=10)
-
-        self.back_left_thigh = rospy.Publisher('/quad_robo/blt_position_controller/command', Float64, queue_size=10) 
-        self.back_left_leg = rospy.Publisher('/quad_robo/bll_position_controller/command', Float64, queue_size=10)
-        self.back_left_shin = rospy.Publisher('/quad_robo/bls_position_controller/command', Float64, queue_size=10)
-
-        self.front_left_thigh = rospy.Publisher('/quad_robo/flt_position_controller/command', Float64, queue_size=10) 
-        self.front_left_leg = rospy.Publisher('/quad_robo/fll_position_controller/command', Float64, queue_size=10)
-        self.front_left_shin = rospy.Publisher('/quad_robo/fls_position_controller/command', Float64, queue_size=10)
-
-        self.front_right_thigh = rospy.Publisher('/quad_robo/frt_position_controller/command', Float64, queue_size=10)
-        self.front_right_leg = rospy.Publisher('/quad_robo/frl_position_controller/command', Float64, queue_size=10)
-        self.front_right_shin = rospy.Publisher('/quad_robo/frs_position_controller/command', Float64, queue_size=10)
 
         self.stand()
 
@@ -169,82 +152,35 @@ class locomotion_controller(object):
         self.moveFrontRightLeg(90, 0, 90)
         self.moveBackLeftLeg(90, 0, 90)
         self.moveBackRightLeg(90, 0, 90)
-        self.back_right_thigh.publish(1.57)
-        self.back_right_leg.publish(1.57+0.7)
-        self.back_right_shin.publish(3.14-1.5)
-        self.front_right_thigh.publish(1.57)
-        self.front_right_leg.publish(1.57+0.7)
-        self.front_right_shin.publish(3.14-1.5) 
-        self.back_left_thigh.publish(1.57)
-        self.back_left_leg.publish(1.57-0.7) 
-        self.back_left_shin.publish(0+1.5)
-        self.front_left_thigh.publish(1.57)
-        self.front_left_leg.publish(1.57-0.7)
-        self.front_left_shin.publish(0+1.5)
+
         self.rate.sleep()
 
     def land(self):
-        self.back_right_thigh.publish(1.57)
-        self.back_right_leg.publish(1.57+0.7)
-        self.back_right_shin.publish(3.14-2.0)
-        self.front_right_thigh.publish(1.57)
-        self.front_right_leg.publish(1.57+0.7)
-        self.front_right_shin.publish(3.14-2.0) 
-        self.back_left_thigh.publish(1.57)
-        self.back_left_leg.publish(1.57-0.7) 
-        self.back_left_shin.publish(0+2.0)
-        self.front_left_thigh.publish(1.57)
-        self.front_left_leg.publish(1.57-0.7)
-        self.front_left_shin.publish(0+2.0)
-        '''self.back_right_thigh.publish(1.57)
-        self.back_right_leg.publish(1.57)
-        self.back_right_shin.publish(1.57)
-        self.front_right_thigh.publish(1.57)
-        self.front_right_leg.publish(1.57)
-        self.front_right_shin.publish(1.57) 
-        self.back_left_thigh.publish(1.57)
-        self.back_left_leg.publish(1.57) 
-        self.back_left_shin.publish(1.57)
-        self.front_left_thigh.publish(1.57)
-        self.front_left_leg.publish(1.57)
-        self.front_left_shin.publish(1.57)'''
         self.rate.sleep()
 
     def up(self, angleStep):
-        self.back_right_thigh.publish(1.57)
-        self.back_right_leg.publish(1.57+0.7)
-        self.back_right_shin.publish(3.14-angleStep)
-        self.front_right_thigh.publish(1.57)
-        self.front_right_leg.publish(1.57+0.7)
-        self.front_right_shin.publish(3.14-angleStep) 
-        self.back_left_thigh.publish(1.57)
-        self.back_left_leg.publish(1.57-0.7) 
-        self.back_left_shin.publish(0+angleStep)
-        self.front_left_thigh.publish(1.57)
-        self.front_left_leg.publish(1.57-0.7)
-        self.front_left_shin.publish(0+angleStep)
         self.rate.sleep()
     
     def moveFrontLeftLeg(self, foot, leg, shoulder):
-        #print([180-foot,180-(90+leg), 180-shoulder])
+        #print([foot,180-(90-leg), 180-shoulder])
         RobotJoints.servo[0].angle = foot
         RobotJoints.servo[4].angle = 180-(90-leg)
         RobotJoints.servo[5].angle = 180-shoulder
     
     def moveBackLeftLeg(self, foot, leg, shoulder):
-        #print([180-foot,180-(90+leg), 180-shoulder])
+        #print([foot,180-(90-leg), 180-shoulder])
         RobotJoints.servo[15].angle = foot
         RobotJoints.servo[11].angle = 180-(90-leg)
         RobotJoints.servo[10].angle = 180-shoulder
 
     def moveFrontRightLeg(self, foot, leg, shoulder):
-        #print([foot,180-(90-leg), shoulder])
+        #print([180-foot,180-(90+leg), shoulder])
         RobotJoints.servo[3].angle = 180-foot
         RobotJoints.servo[1].angle = 180-(90+leg)
         RobotJoints.servo[2].angle = shoulder
 
     def moveBackRightLeg(self, foot, leg, shoulder):
-        #print([foot,180-(90-leg), shoulder])
+        #print([180-foot,180-(90+leg), shoulder])
         RobotJoints.servo[12].angle = 180-foot
         RobotJoints.servo[14].angle = 180-(90+leg)
         RobotJoints.servo[13].angle = shoulder

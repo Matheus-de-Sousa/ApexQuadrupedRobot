@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from adafruit_servokit import ServoKit
 class Leg:
     
