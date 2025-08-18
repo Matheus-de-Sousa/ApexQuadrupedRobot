@@ -1,0 +1,5 @@
+<launch>
+
+<node pkg="apex_controller" type="apex_controller_node.py" name="apex_controller_node"
+	  respawn="true" output="screen"/>
+</launch>

@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
 import math
 
 def InverseKinematics(x, y, z):
+
     """Main Inverse Kinematic function.
 
     Calculates the angles (deg.) for each servo (foot, leg, shoulder) on a single leg given
@@ -24,27 +27,27 @@ def InverseKinematics(x, y, z):
     float: Angle (deg) to set the servo controlling the leg
     float: Angle (deg) to set the servo controlling the shoulder
     """
-    
+
     # Constant lengths in mm
-    upper_leg = 120
-    lower_leg = 120
-    shoulder_offset = 40
+    upper_leg = 104
+    lower_leg = 131
+    shoulder_offset = 56
 
     y1 = math.sqrt(y*y + z*z - shoulder_offset*shoulder_offset)
-    
+
     distance = math.sqrt(x*x + y1*y1)
 
     foot = math.acos((distance*distance - upper_leg*upper_leg - lower_leg*lower_leg)/(-2*upper_leg*lower_leg))
-    
+
     leg = math.asin((lower_leg*math.sin(foot))/distance) - (math.atan(x/y) if y!=0 else 0)
 
     shoulder = math.atan(distance/shoulder_offset) + math.atan(z/y)
-    
+
     # Convert radians to degrees
-    foot = foot/math.pi * 180
-    leg = leg/math.pi * 180
-    shoulder = shoulder/math.pi * 180
-    
+    foot = (foot/math.pi) * 180
+    leg = (leg/math.pi) * 180
+    shoulder = (shoulder/math.pi) * 180
+
     return foot, leg, shoulder
 
 def interpolate(x1, x2, ratio):
