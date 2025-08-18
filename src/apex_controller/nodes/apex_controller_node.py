@@ -4,10 +4,12 @@ import rospy
 import numpy as np
 
 from apex_controller.locomotion_controller import locomotion_controller
+from apex_controller.Robot import Apex
 
 if __name__ == "__main__":
     rospy.init_node("apex_controller_node")
-    apex_controller = locomotion_controller()
+    ApexRobot = Apex() 
+    apex_controller = locomotion_controller(ApexRobot)
 
     start_time = 0
     while not start_time:
