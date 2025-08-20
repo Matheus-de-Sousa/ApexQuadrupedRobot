@@ -12,12 +12,12 @@ class locomotion_controller(object):
         self.ApexRobot = ApexRobot
         self.rate = rospy.Rate(200)
         self.trotGait = [[-30,220,60], [-30,190,60], [30,190,60], [30,220,60],[10,220,60],[-20,220,60]]
-        self.gaits = [[-30,220,60], [-30,190,60], [30,190,60], [30,220,60],[18,220,60],[6,220,60],[-6,220,60],[-18,220,60]]
+        self.gaits = [[-30,220,65], [-30,190,65], [30,190,65], [30,220,65],[18,220,65],[6,220,65],[-6,220,65],[-18,220,65]]
         self.lastGaitIndex = 0
         self.lastElapsedTime = 0
 
-        self.forward_factor = 1.1
-        self.height_factor = -15
+        self.forward_factor = 0.7
+        self.height_factor = -60
         self.rotation_factor = 0
 
         self.keyframesFrontLeftLeg = [[-30,210, 60], [-30,200, 70]]
@@ -145,16 +145,16 @@ class locomotion_controller(object):
         self.keyframesBackLeftLeg[1][0] = self.keyframesBackLeftLeg[1][0]*self.forward_factor - x_rotBL
         self.keyframesBackLeftLeg[1][0] += z_rotBL
         
-        if(adjusted_index4 == 1 or adjusted_index3 == 1 or adjusted_index4 == 2 or adjusted_index3 == 2):
-            self.keyframesBackLeftLeg[1][2] -= 20
-            self.keyframesFrontLeftLeg[1][2] -= 20
-            self.keyframesBackRightLeg[1][2] += 20
-            self.keyframesFrontRightLeg[1][2] += 20
+        '''if(adjusted_index4 == 1 or adjusted_index3 == 1 or adjusted_index4 == 2 or adjusted_index3 == 2):
+            self.keyframesBackLeftLeg[1][2] -= 10
+            self.keyframesFrontLeftLeg[1][2] -= 10
+            self.keyframesBackRightLeg[1][2] += 10
+            self.keyframesFrontRightLeg[1][2] += 10
         else:
-            self.keyframesBackLeftLeg[1][2] += 20
-            self.keyframesFrontLeftLeg[1][2] += 20
-            self.keyframesBackRightLeg[1][2] -= 20
-            self.keyframesFrontRightLeg[1][2] -= 20
+            self.keyframesBackLeftLeg[1][2] += 10
+            self.keyframesFrontLeftLeg[1][2] += 10
+            self.keyframesBackRightLeg[1][2] -= 10
+            self.keyframesFrontRightLeg[1][2] -= 10'''
         
         self.UpdateLegsPosition(ratio)
 
@@ -192,14 +192,18 @@ class locomotion_controller(object):
         self.keyframesBackRightLeg[0] = self.keyframesBackRightLeg[1]
     
     def stand(self):
-        self.moveFrontLeftLeg(90, 0, 90)
-        self.moveFrontRightLeg(90, 0, 90)
-        self.moveBackLeftLeg(90, 0, 90)
-        self.moveBackRightLeg(90, 0, 90)
+        self.moveFrontLeftLeg(90, 60, 90)
+        self.moveFrontRightLeg(90, 60, 90)
+        self.moveBackLeftLeg(90, 60, 90)
+        self.moveBackRightLeg(90, 60, 90)
 
         self.rate.sleep()
 
     def land(self):
+        self.moveFrontLeftLeg(90, 0, 90)
+        self.moveFrontRightLeg(90, 0, 90)
+        self.moveBackLeftLeg(90, 0, 90)
+        self.moveBackRightLeg(90, 0, 90)
         self.rate.sleep()
 
     def up(self, angleStep):

@@ -15,14 +15,15 @@ if __name__ == "__main__":
     while not start_time:
         start_time = rospy.Time.now()
     step = False
-    apex_controller.stand()
+    #apex_controller.stand()
     while not rospy.is_shutdown():
         currentTime = rospy.Time.now()
         deltaT = currentTime - start_time
-        #apex_controller.stand()
+        #apex_controller.land()
         #apex_controller.moveFrontRightLeg(0, 180, 10)
         #rospy.sleep(1)
-        apex_controller.UpdateMovementSequence(deltaT.to_sec(), 0.1)
+        #apex_controller.TrotGaitMovement(deltaT.to_sec(), 0.06)
+        apex_controller.UpdateMovementSequence(deltaT.to_sec(), 0.06)
         '''if step:
             apex_controller.UpdateMovementSequence(deltaT.to_sec(), 1)
         else:

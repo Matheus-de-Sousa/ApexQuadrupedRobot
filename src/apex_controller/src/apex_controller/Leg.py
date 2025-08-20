@@ -19,7 +19,7 @@ class Leg:
         self.legJointOffset = offsets[1]
         self.shoulderJointOffset = offsets[2]
     
-    def setJointAngle(self, foot, leg, shoulder):
+    def setJointsAngles(self, foot, leg, shoulder):
         self.Joints.servo[self.footJointChannel].angle = foot + self.footJointOffset
         self.Joints.servo[self.legJointChannel].angle = leg + self.legJointOffset
         self.Joints.servo[self.shoulderJointChannel].angle = shoulder + self.shoulderJointOffset
