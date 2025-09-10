@@ -2,4 +2,8 @@
 
 <node pkg="apex_controller" type="apex_controller_node.py" name="apex_controller_node"
 	  respawn="true" output="screen"/>
+	  
+<node pkg="apex_controller" type="imu_node.py" name="imu_node" output ="screen"/>
+
+<node pkg="imu_complementary_filter" type="complementary_filter_node" name="imu_filter_node_for_orientation"/>
 </launch>

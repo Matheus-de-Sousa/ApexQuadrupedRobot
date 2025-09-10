@@ -3,11 +3,11 @@
 from apex_controller.Leg import Leg
 class Apex:
 
-    def __init__(self):
-        self.FrontLeftLeg = Leg(104,131,36, JointsChannels=[0,1,2], offsets=[-20,3,-9])
-        self.BackLeftLeg = Leg(104,131,56, JointsChannels=[3,4,5], offsets=[-17,10,0])
-        self.FrontRightLeg = Leg(104,131,56, JointsChannels=[6,7,8], offsets=[20,-7,0])
-        self.BackRightLeg = Leg(104,131,56, JointsChannels=[9,10,11], offsets=[15,-15,-9])
+    def __init__(self):# offsets estáticos
+        self.FrontLeftLeg = Leg(104,131,36, JointsChannels=[0,1,2], offsets=[-10,10,-9])
+        self.BackLeftLeg = Leg(104,131,56, JointsChannels=[3,4,5], offsets=[5,-3,-9])
+        self.FrontRightLeg = Leg(104,131,56, JointsChannels=[6,7,8], offsets=[5,25,12])
+        self.BackRightLeg = Leg(104,131,56, JointsChannels=[9,10,11], offsets=[0,0,10])
 
     def setFrontLeftLeg(self, foot, leg, shoulder):
         LegJointAngle = 180-(90-leg)

@@ -12,16 +12,16 @@ class locomotion_controller(object):
         
         self.ApexRobot = ApexRobot
         self.rate = rospy.Rate(200)
-        self.trotGait = [[-30,220,60], [-30,190,60], [30,190,60], [30,220,60],[10,220,60],[-20,220,60]]
+        self.trotGait = [[-120,220,60], [-100,190,60], [-60,190,60], [-60,220,60],[-80,220,60],[-100,220,60]]
         self.gaits = [[-30,220,65], [-30,190,65], [30,190,65], [30,220,65],[18,220,65],[6,220,65],[-6,220,65],[-18,220,65]]
         self.lastGaitIndex = 0
         self.lastElapsedTime = 0
 
-        self.forward_factor = -1
-        self.height_factor = -30
+        self.forward_factor = 1.2
+        self.height_factor = -35
         self.rotation_factor = 0
-        self.lean = -25
-        self.sidelean = 0
+        self.lean = -3
+        self.sidelean = -5
 
         self.keyframesFrontLeftLeg = [[-30,210, 60], [-30,200, 70]]
         self.keyframesBackLeftLeg = [[-30,210, 60], [-30,200, 70]]
@@ -38,7 +38,7 @@ class locomotion_controller(object):
         self.jointsPositionBL = [[0,0],[0,0]]
         self.jointsPositionBR = [[0,0],[0,0]]
 
-        self.stand()
+        #self.stand()
         
         #self.cretaGaitGraphPlot()
         
@@ -113,13 +113,13 @@ class locomotion_controller(object):
 
         self.keyframesFrontRightLeg[1] = self.trotGait[gaitIndex].copy()
         self.keyframesFrontRightLeg[1][1] += self.height_factor + self.lean
-        self.keyframesFrontRightLeg[1][0] = self.keyframesFrontRightLeg[1][0]*self.forward_factor + x_rotFR
+        self.keyframesFrontRightLeg[1][0] = (self.keyframesFrontRightLeg[1][0]+90)*self.forward_factor - 90 #+ x_rotFR
         self.keyframesFrontRightLeg[1][2] += z_rotFR + self.sidelean
 
         self.keyframesBackLeftLeg[1] = self.trotGait[gaitIndex].copy()
         self.keyframesBackLeftLeg[1][1] += self.height_factor - self.lean
-        self.keyframesBackLeftLeg[1][0] = self.keyframesBackLeftLeg[1][0]*self.forward_factor - x_rotFR
-        self.keyframesBackLeftLeg[1][0] += z_rotFR - self.sidelean
+        self.keyframesBackLeftLeg[1][0] = (self.keyframesBackLeftLeg[1][0]+90)*self.forward_factor - 90 #- x_rotFR
+        self.keyframesBackLeftLeg[1][2] += z_rotFR - self.sidelean
 
         adjusted_index = gaitIndex + int(len(self.trotGait)/2)
         if(adjusted_index >= len(self.trotGait)):
@@ -131,12 +131,12 @@ class locomotion_controller(object):
 
         self.keyframesFrontLeftLeg[1] = self.trotGait[adjusted_index].copy()
         self.keyframesFrontLeftLeg[1][1] += self.height_factor + self.lean
-        self.keyframesFrontLeftLeg[1][0] = self.keyframesFrontLeftLeg[1][0]*self.forward_factor - x_rotFL
+        self.keyframesFrontLeftLeg[1][0] = (self.keyframesFrontLeftLeg[1][0]+90)*self.forward_factor - 90 #- x_rotFL
         self.keyframesFrontLeftLeg[1][2] += -z_rotFL - self.sidelean
 
         self.keyframesBackRightLeg[1] = self.trotGait[adjusted_index].copy()
         self.keyframesBackRightLeg[1][1] += self.height_factor - self.lean
-        self.keyframesBackRightLeg[1][0] = self.keyframesBackRightLeg[1][0]*self.forward_factor + x_rotFL
+        self.keyframesBackRightLeg[1][0] = (self.keyframesBackRightLeg[1][0]+90)*self.forward_factor - 90 #+ x_rotFL
         self.keyframesBackRightLeg[1][2] += -z_rotFL + self.sidelean
 
         self.UpdateLegsPosition(ratio)
@@ -207,7 +207,7 @@ class locomotion_controller(object):
         self.keyframesBackLeftLeg[1] = self.gaits[adjusted_index4].copy()
         self.keyframesBackLeftLeg[1][1] += self.height_factor - self.lean
         self.keyframesBackLeftLeg[1][0] = self.keyframesBackLeftLeg[1][0]*self.forward_factor - x_rotBL
-        self.keyframesBackLeftLeg[1][0] += z_rotBL - self.sidelean
+        self.keyframesBackLeftLeg[1][2] += z_rotBL - self.sidelean
         
         '''if(adjusted_index4 == 1 or adjusted_index3 == 1 or adjusted_index4 == 2 or adjusted_index3 == 2):
             self.keyframesBackLeftLeg[1][2] -= 10
@@ -223,7 +223,15 @@ class locomotion_controller(object):
         self.UpdateLegsPosition(ratio)
 
         self.rate.sleep()
-    
+    def SetSingleGait(self, gait):
+        footBL, legBL, shoulderBL = InverseKinematics(gait[0],gait[1],gait[2] - self.sidelean)
+        footFL, legFL, shoulderFL = InverseKinematics(gait[0],gait[1],gait[2] - self.sidelean)
+        footBR, legBR, shoulderBR = InverseKinematics(gait[0],gait[1],gait[2] + self.sidelean)
+        footFR, legFR, shoulderFR = InverseKinematics(gait[0],gait[1],gait[2] + self.sidelean)
+        self.moveBackLeftLeg(footBL, legBL, shoulderBL)
+        self.moveFrontLeftLeg(footFL, legFL, shoulderFL)
+        self.moveFrontRightLeg(footFR, legFR, shoulderFR)
+        self.moveBackRightLeg(footBR, legBR, shoulderBR)
     def UpdateLegsPosition(self, ratio):
         key1 = self.keyframesFrontLeftLeg[0]
         key2 = self.keyframesFrontLeftLeg[1]

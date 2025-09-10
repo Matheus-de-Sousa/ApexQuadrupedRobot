@@ -2,12 +2,24 @@
 
 import rospy
 import numpy as np
+import math
+from sensor_msgs.msg import Imu
+from tf.transformations import euler_from_quaternion
 
 from apex_controller.locomotion_controller import locomotion_controller
 from apex_controller.Robot import Apex
 
+def handle_imu_pose(msg):
+    global roll, pitch, yaw
+    imu_quaternion = [msg.orientation.x,msg.orientation.y,msg.orientation.z,msg.orientation.w]
+    roll, pitch, yaw = euler_from_quaternion(imu_quaternion)
+    roll = (roll/math.pi)*180
+    pitch = (pitch/math.pi)*180
+    yaw = (yaw/math.pi)*180
+    
 if __name__ == "__main__":
     rospy.init_node("apex_controller_node")
+    rospy.Subscriber('/imu/data', Imu, handle_imu_pose)
     ApexRobot = Apex() 
     apex_controller = locomotion_controller(ApexRobot)
 
@@ -19,10 +31,14 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         currentTime = rospy.Time.now()
         deltaT = currentTime - start_time
+        #print((roll, pitch, yaw))
+        #rospy.sleep(0.01)
         #apex_controller.land()
         #apex_controller.moveFrontRightLeg(0, 180, 10)
         #rospy.sleep(1)
-        apex_controller.TrotGaitMovement(deltaT.to_sec(), 0.04)
+        #apex_controller.SetSingleGait([-90,180,60]) # gait estártico
+        #apex_controller.SetSingleGait([-60,150,60])
+        apex_controller.TrotGaitMovement(deltaT.to_sec(), 0.08)
         #apex_controller.UpdateMovementSequence(deltaT.to_sec(), 0.06)
         #apex_controller.gaitGraph()
         '''if step:

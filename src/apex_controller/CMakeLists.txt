@@ -22,6 +22,7 @@ include_directories(
 catkin_install_python(
   PROGRAMS
   nodes/apex_controller_node.py
+  nodes/imu_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
