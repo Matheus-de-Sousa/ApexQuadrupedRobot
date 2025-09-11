@@ -22,8 +22,9 @@ if __name__ == "__main__":
         #apex_controller.land()
         #apex_controller.moveFrontRightLeg(0, 180, 10)
         #rospy.sleep(1)
-        #apex_controller.TrotGaitMovement(deltaT.to_sec(), 0.06)
-        apex_controller.UpdateMovementSequence(deltaT.to_sec(), 0.06)
+        apex_controller.TrotGaitMovement(deltaT.to_sec(), 0.04)
+        #apex_controller.UpdateMovementSequence(deltaT.to_sec(), 0.06)
+        #apex_controller.gaitGraph()
         '''if step:
             apex_controller.UpdateMovementSequence(deltaT.to_sec(), 1)
         else:

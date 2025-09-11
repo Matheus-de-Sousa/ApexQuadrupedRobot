@@ -2,6 +2,25 @@
 
 import math
 
+# Constant lengths in mm
+upper_leg = 104
+lower_leg = 131
+shoulder_offset = 56
+
+def ForwardKinematics2D(foot, leg):
+    # Convert degrees to radians
+    foot = (foot/180)*math.pi
+    leg = (leg/180)*math.pi
+    
+    y1 = -upper_leg * math.cos(leg)
+    x1 = -upper_leg*math.sin(leg)
+    distance = math.sqrt(-2*math.cos(foot)*upper_leg*lower_leg + upper_leg**2 + lower_leg**2)
+    omega = math.asin((lower_leg*math.sin(foot))/distance) - leg
+    y2 = -distance*math.cos(omega)
+    x2 = distance*math.sin(omega)
+    jointsPosition = [[x2,x1,0],[y2,y1,0]]
+    return jointsPosition
+
 def InverseKinematics(x, y, z):
 
     """Main Inverse Kinematic function.
@@ -27,11 +46,6 @@ def InverseKinematics(x, y, z):
     float: Angle (deg) to set the servo controlling the leg
     float: Angle (deg) to set the servo controlling the shoulder
     """
-
-    # Constant lengths in mm
-    upper_leg = 104
-    lower_leg = 131
-    shoulder_offset = 56
 
     y1 = math.sqrt(y*y + z*z - shoulder_offset*shoulder_offset)
 
