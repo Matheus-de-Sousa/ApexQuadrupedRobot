@@ -3,9 +3,9 @@
 import math
 
 # Constant lengths in mm
-upper_leg = 104
-lower_leg = 131
-shoulder_offset = 56
+upper_leg = 104                #120
+lower_leg = 131                #138
+shoulder_offset = 56           #56
 
 def ForwardKinematics2D(foot, leg):
     # Convert degrees to radians

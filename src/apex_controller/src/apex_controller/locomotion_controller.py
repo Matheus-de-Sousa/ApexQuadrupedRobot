@@ -5,23 +5,47 @@ import math
 import matplotlib.pyplot as plt
 from apex_controller.inverse_kinematics import InverseKinematics, ForwardKinematics2D, interpolate, KeyframeKinematics
 from apex_controller.Robot import Apex
+#         Deu certo +/-
+#         self.CenterOffset = 90
+#         self.ApexRobot = ApexRobot
+#         self.rate = rospy.Rate(200)
+#         self.trotGait = [[-120,220,60], [-100,190,60], [-60,190,60], [-60,220,60],[-80,220,60],[-100,220,60]] 
+#         self.gaits = [[-30,220,65], [-30,190,65], [30,190,65], [30,220,65],[18,220,65],[6,220,65],[-6,220,65],[-18,220,65]]
+#         self.lastGaitIndex = 0
+#         self.lastElapsedTime = 0
+# 
+#         self.forward_factor = 1.2
+#         self.height_factor = -35
+#         self.rotation_factor = 0
+#         self.lean = -3
+#         self.sidelean = -5
+#         
+#         self.frontLeft_height = 0
+#         self.frontRight_height = 0
+#         self.backLeft_height = 0
+#         self.backRight_height = 0
 
 class locomotion_controller(object):
 
     def __init__(self, ApexRobot):
-        
+        self.CenterOffset = 90
         self.ApexRobot = ApexRobot
         self.rate = rospy.Rate(200)
-        self.trotGait = [[-120,220,60], [-100,190,60], [-60,190,60], [-60,220,60],[-80,220,60],[-100,220,60]]
+        self.trotGait = [[-120,220,60], [-100,200,60], [-60,200,60], [-60,220,60],[-80,220,60],[-100,220,60]] 
         self.gaits = [[-30,220,65], [-30,190,65], [30,190,65], [30,220,65],[18,220,65],[6,220,65],[-6,220,65],[-18,220,65]]
         self.lastGaitIndex = 0
         self.lastElapsedTime = 0
 
         self.forward_factor = 1.2
-        self.height_factor = -35
+        self.height_factor = -80
         self.rotation_factor = 0
         self.lean = -3
         self.sidelean = -5
+        
+        self.frontLeft_height = -5
+        self.frontRight_height = 0
+        self.backLeft_height = 0
+        self.backRight_height = 0
 
         self.keyframesFrontLeftLeg = [[-30,210, 60], [-30,200, 70]]
         self.keyframesBackLeftLeg = [[-30,210, 60], [-30,200, 70]]
@@ -112,13 +136,13 @@ class locomotion_controller(object):
         z_rotFR = z_rot-math.cos(angle) * self.rotation_factor
 
         self.keyframesFrontRightLeg[1] = self.trotGait[gaitIndex].copy()
-        self.keyframesFrontRightLeg[1][1] += self.height_factor + self.lean
-        self.keyframesFrontRightLeg[1][0] = (self.keyframesFrontRightLeg[1][0]+90)*self.forward_factor - 90 #+ x_rotFR
+        self.keyframesFrontRightLeg[1][1] += self.height_factor + self.lean + self.frontRight_height
+        self.keyframesFrontRightLeg[1][0] = (self.keyframesFrontRightLeg[1][0]+self.CenterOffset)*self.forward_factor - self.CenterOffset #+ x_rotFR
         self.keyframesFrontRightLeg[1][2] += z_rotFR + self.sidelean
 
         self.keyframesBackLeftLeg[1] = self.trotGait[gaitIndex].copy()
-        self.keyframesBackLeftLeg[1][1] += self.height_factor - self.lean
-        self.keyframesBackLeftLeg[1][0] = (self.keyframesBackLeftLeg[1][0]+90)*self.forward_factor - 90 #- x_rotFR
+        self.keyframesBackLeftLeg[1][1] += self.height_factor - self.lean + self.backLeft_height
+        self.keyframesBackLeftLeg[1][0] = (self.keyframesBackLeftLeg[1][0]+self.CenterOffset)*self.forward_factor - self.CenterOffset #- x_rotFR
         self.keyframesBackLeftLeg[1][2] += z_rotFR - self.sidelean
 
         adjusted_index = gaitIndex + int(len(self.trotGait)/2)
@@ -130,13 +154,13 @@ class locomotion_controller(object):
         z_rotFL = z_rot-math.cos(angle) * self.rotation_factor
 
         self.keyframesFrontLeftLeg[1] = self.trotGait[adjusted_index].copy()
-        self.keyframesFrontLeftLeg[1][1] += self.height_factor + self.lean
-        self.keyframesFrontLeftLeg[1][0] = (self.keyframesFrontLeftLeg[1][0]+90)*self.forward_factor - 90 #- x_rotFL
+        self.keyframesFrontLeftLeg[1][1] += self.height_factor + self.lean + self.frontLeft_height
+        self.keyframesFrontLeftLeg[1][0] = (self.keyframesFrontLeftLeg[1][0]+self.CenterOffset)*self.forward_factor - self.CenterOffset #- x_rotFL
         self.keyframesFrontLeftLeg[1][2] += -z_rotFL - self.sidelean
 
         self.keyframesBackRightLeg[1] = self.trotGait[adjusted_index].copy()
-        self.keyframesBackRightLeg[1][1] += self.height_factor - self.lean
-        self.keyframesBackRightLeg[1][0] = (self.keyframesBackRightLeg[1][0]+90)*self.forward_factor - 90 #+ x_rotFL
+        self.keyframesBackRightLeg[1][1] += self.height_factor - self.lean + self.backRight_height
+        self.keyframesBackRightLeg[1][0] = (self.keyframesBackRightLeg[1][0]+self.CenterOffset)*self.forward_factor - self.CenterOffset #+ x_rotFL
         self.keyframesBackRightLeg[1][2] += -z_rotFL + self.sidelean
 
         self.UpdateLegsPosition(ratio)

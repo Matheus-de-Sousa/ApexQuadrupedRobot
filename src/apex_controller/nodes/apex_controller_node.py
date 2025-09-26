@@ -36,9 +36,9 @@ if __name__ == "__main__":
         #apex_controller.land()
         #apex_controller.moveFrontRightLeg(0, 180, 10)
         #rospy.sleep(1)
-        #apex_controller.SetSingleGait([-90,180,60]) # gait estártico
+        #apex_controller.SetSingleGait([-90,190,60]) # gait estático
         #apex_controller.SetSingleGait([-60,150,60])
-        apex_controller.TrotGaitMovement(deltaT.to_sec(), 0.08)
+        apex_controller.TrotGaitMovement(deltaT.to_sec(), 0.07)
         #apex_controller.UpdateMovementSequence(deltaT.to_sec(), 0.06)
         #apex_controller.gaitGraph()
         '''if step:
