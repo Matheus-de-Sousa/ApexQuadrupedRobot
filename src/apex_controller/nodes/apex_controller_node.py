@@ -4,11 +4,16 @@ import rospy
 import numpy as np
 import math
 from sensor_msgs.msg import Imu
+from geometry_msgs.msg import Twist
 from tf.transformations import euler_from_quaternion
 
 from apex_controller.locomotion_controller import locomotion_controller
 from apex_controller.Robot import Apex
 
+velMsg = None
+def velCallback(msg):
+    global velMsg
+    velMsg = msg
 def handle_imu_pose(msg):
     global roll, pitch, yaw
     imu_quaternion = [msg.orientation.x,msg.orientation.y,msg.orientation.z,msg.orientation.w]
@@ -20,6 +25,7 @@ def handle_imu_pose(msg):
 if __name__ == "__main__":
     rospy.init_node("apex_controller_node")
     rospy.Subscriber('/imu/data', Imu, handle_imu_pose)
+    vel_sub = rospy.Subscriber('apex_controller/cmd_vel', Twist, velCallback)
     ApexRobot = Apex() 
     apex_controller = locomotion_controller(ApexRobot)
 
@@ -38,7 +44,9 @@ if __name__ == "__main__":
         #rospy.sleep(1)
         #apex_controller.SetSingleGait([-90,190,60]) # gait estático
         #apex_controller.SetSingleGait([-60,150,60])
-        apex_controller.TrotGaitMovement(deltaT.to_sec(), 0.07)
+        #if velMsg != None:
+            #print(f"({velMsg.linear.x},{velMsg.angular.z})")
+        apex_controller.TrotGaitMovement(velMsg, deltaT.to_sec(), 0.07)
         #apex_controller.UpdateMovementSequence(deltaT.to_sec(), 0.06)
         #apex_controller.gaitGraph()
         '''if step:

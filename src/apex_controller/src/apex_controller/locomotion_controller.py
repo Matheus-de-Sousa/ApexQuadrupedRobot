@@ -37,7 +37,7 @@ class locomotion_controller(object):
         self.lastElapsedTime = 0
 
         self.forward_factor = 1.2
-        self.height_factor = -80
+        self.height_factor = -70
         self.rotation_factor = 0
         self.lean = -3
         self.sidelean = -5
@@ -113,7 +113,22 @@ class locomotion_controller(object):
         self.keyframesBackRightLegHist = [[],[]]
 
 
-    def TrotGaitMovement(self, elapsedSequenceTime,sequenceTime):
+    def TrotGaitMovement(self, velMsg,elapsedSequenceTime,sequenceTime):
+        if velMsg != None:
+            if velMsg.linear.x > 0:
+                self.forward_factor = 1.2
+            elif velMsg.linear.x < 0:
+                self.forward_factor = -1.2
+            else:
+                self.forward_factor = 0
+
+            if velMsg.angular.z > 0:
+                self.rotation_factor = 30
+            elif velMsg.angular.z < 0:
+                self.rotation_factor = -30
+            else:
+                self.rotation_factor = 0
+            
         ratio = float((elapsedSequenceTime-self.lastElapsedTime)/sequenceTime)
         if(ratio >= len(self.trotGait)):
             ratio -= len(self.trotGait)
