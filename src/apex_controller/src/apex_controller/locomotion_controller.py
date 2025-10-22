@@ -31,6 +31,8 @@ class locomotion_controller(object):
         self.CenterOffset = 90
         self.ApexRobot = ApexRobot
         self.rate = rospy.Rate(200)
+        self.trotGaitMove = [[-120,220,60], [-100,200,60], [-60,200,60], [-60,220,60],[-80,220,60],[-100,220,60]]
+        self.trotGaitStop = [[-120,220,60], [-100,220,60], [-60,220,60], [-60,220,60],[-80,220,60],[-100,220,60]]
         self.trotGait = [[-120,220,60], [-100,200,60], [-60,200,60], [-60,220,60],[-80,220,60],[-100,220,60]] 
         self.gaits = [[-30,220,65], [-30,190,65], [30,190,65], [30,220,65],[18,220,65],[6,220,65],[-6,220,65],[-18,220,65]]
         self.lastGaitIndex = 0
@@ -117,17 +119,24 @@ class locomotion_controller(object):
         if velMsg != None:
             if velMsg.linear.x > 0:
                 self.forward_factor = 1.2
+                self.trotGait = self.trotGaitMove
             elif velMsg.linear.x < 0:
                 self.forward_factor = -1.2
+                self.trotGait = self.trotGaitMove
             else:
                 self.forward_factor = 0
 
             if velMsg.angular.z > 0:
                 self.rotation_factor = 30
+                self.trotGait = self.trotGaitMove
             elif velMsg.angular.z < 0:
                 self.rotation_factor = -30
+                self.trotGait = self.trotGaitMove
             else:
                 self.rotation_factor = 0
+                
+            if velMsg.angular.z == 0 and velMsg.linear.x == 0:
+                self.trotGait = self.trotGaitStop
             
         ratio = float((elapsedSequenceTime-self.lastElapsedTime)/sequenceTime)
         if(ratio >= len(self.trotGait)):
